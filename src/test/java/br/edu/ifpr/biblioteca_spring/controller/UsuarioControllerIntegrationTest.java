@@ -1,24 +1,30 @@
 package br.edu.ifpr.biblioteca_spring.controller;
 
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.flash;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@AutoConfigureMockMvc
+import br.edu.ifpr.biblioteca_spring.models.Usuario;
+import br.edu.ifpr.biblioteca_spring.service.UsuariosService;
+
+@WebMvcTest(UsuarioController.class)
+@ActiveProfiles("test")
 public class UsuarioControllerIntegrationTest {
 
     @Autowired
     private MockMvc mockMvc;
+
+    @MockBean
+    private UsuariosService usuariosService;
 
     @Test
     public void deveRetornarAViewDeListagemDeUsuarios() throws Exception {
@@ -36,6 +42,10 @@ public class UsuarioControllerIntegrationTest {
 
     @Test
     public void deveAdicionarPessoaCorretamente() throws Exception {
+        // Mock do serviço para retornar um usuário
+        Usuario usuarioMock = new Usuario(1L, "João Silva", "12345678901");
+        when(usuariosService.adicionar(any(Usuario.class))).thenReturn(usuarioMock);
+
         mockMvc.perform(post("/usuarios")
                 .param("nome", "João Silva")
                 .param("cpf", "12345678901"))
@@ -60,5 +70,16 @@ public class UsuarioControllerIntegrationTest {
                 .param("cpf", "123")) // CPF inválido
                 .andExpect(status().isOk())
                 .andExpect(view().name("usuarios/form"));
+    }
+
+    @Test
+    public void deveVoltarParaOFormularioComCpfInvalidoEModeloComErros() throws Exception {
+        mockMvc.perform(post("/usuarios")
+                .param("nome", "João Silva")
+                .param("cpf", "123.456.789-99") // CPF inválido
+                .param("email", "joao@teste.com"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("usuarios/form"))
+                .andExpect(model().hasErrors());
     }
 }

@@ -4,6 +4,7 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Profile;
 
 import br.edu.ifpr.biblioteca_spring.models.Livro;
 import br.edu.ifpr.biblioteca_spring.models.Usuario;
@@ -19,6 +20,7 @@ public class BibliotecaSpringApplication {
 	}
 
 	@Bean
+	@Profile("!test") // Não executa durante os testes
 	CommandLineRunner initDatabase(LivroService livroService, UsuariosService usuarioService, EmprestimoService emprestimoService) {
 		return args -> {
 
