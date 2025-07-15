@@ -3,7 +3,7 @@ package br.edu.ifpr.biblioteca_spring.models;
 import java.time.LocalDate;
 
 public class Emprestimo {
-    
+
     private Long id;
     private Usuario usuario;
     private Livro livro;
@@ -11,14 +11,14 @@ public class Emprestimo {
     private LocalDate dataPrevistaDevolucao;
     private LocalDate dataDevolucaoReal;
 
-    public Emprestimo(Long id, Usuario usuario, Livro livro, LocalDate dataEmprestimo, LocalDate dataPrevistaDevolucao) {
+    public Emprestimo(Long id, Usuario usuario, Livro livro, LocalDate dataEmprestimo,
+            LocalDate dataPrevistaDevolucao) {
         this.id = id;
         this.usuario = usuario;
         this.livro = livro;
         this.dataEmprestimo = dataEmprestimo;
         this.dataPrevistaDevolucao = dataPrevistaDevolucao;
     }
-    
 
     public Long getId() {
         return id;
@@ -68,6 +68,4 @@ public class Emprestimo {
         this.dataDevolucaoReal = dataDevolucaoReal;
     }
 
-    
-    
 }

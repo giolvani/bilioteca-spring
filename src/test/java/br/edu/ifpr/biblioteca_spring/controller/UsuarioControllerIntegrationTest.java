@@ -82,4 +82,32 @@ public class UsuarioControllerIntegrationTest {
                 .andExpect(view().name("usuarios/form"))
                 .andExpect(model().hasErrors());
     }
+
+    @Test
+    public void deveRetornarErroQuandoCpfJaExistir() throws Exception {
+        // Mock do serviço para lançar exceção de CPF duplicado
+        when(usuariosService.adicionar(any(Usuario.class)))
+            .thenThrow(new IllegalArgumentException("Já existe um usuário cadastrado com este CPF."));
+
+        mockMvc.perform(post("/usuarios")
+                .param("nome", "João Silva")
+                .param("cpf", "12345678901"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("usuarios/form"))
+                .andExpect(model().attribute("erro", "Já existe um usuário cadastrado com este CPF."));
+    }
+
+    @Test
+    public void deveRetornarErroQuandoUsuarioForNulo() throws Exception {
+        // Mock do serviço para lançar exceção de usuário nulo
+        when(usuariosService.adicionar(any(Usuario.class)))
+            .thenThrow(new IllegalArgumentException("Usuário não pode ser nulo."));
+
+        mockMvc.perform(post("/usuarios")
+                .param("nome", "João Silva")
+                .param("cpf", "12345678901"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("usuarios/form"))
+                .andExpect(model().attribute("erro", "Usuário não pode ser nulo."));
+    }
 }

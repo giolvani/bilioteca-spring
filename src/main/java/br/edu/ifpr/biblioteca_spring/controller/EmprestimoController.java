@@ -90,7 +90,7 @@ public class EmprestimoController {
     }
 
     @GetMapping("/devolucao")
-    public String devolver(@RequestParam Long emprestimoId, RedirectAttributes redirectAttrs) {
+    public String devolver(@RequestParam(required = false) Long emprestimoId, RedirectAttributes redirectAttrs) {
         if (emprestimoId == null) {
             redirectAttrs.addFlashAttribute("erro", "ID do empréstimo é obrigatório.");
             return "redirect:/emprestimos";
