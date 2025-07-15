@@ -69,7 +69,7 @@ public class UsuariosServiceUnitTest {
             usuariosService.buscarPorId(999L);
         });
 
-        assertEquals("Usuario inexistente.", exception.getMessage());
+        assertEquals("Usuário com ID 999 não encontrado.", exception.getMessage());
     }
 
     @Test
